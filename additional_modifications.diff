@@ -1,0 +1,49 @@
+diff --git a/env/lib/python2.7/site-packages/django/template/base.py b/env/lib/python2.7/site-packages/django/template/base.py
+--- a/env/lib/python2.7/site-packages/django/template/base.py
++++ b/env/lib/python2.7/site-packages/django/template/base.py
+174d173
+< 
+250a250
+>         self.dictionary = dict()
+292a293,299
+>         token.origin = self.origin
+>         val = self.dictionary.get(unicode(token.lineno) + unicode(token.origin) + unicode(token_string))
+>         if val is None:
+>             self.dictionary[unicode(token.lineno) + unicode(token.origin) + unicode(token_string)] = 1
+>         else:
+>             self.dictionary[unicode(token.lineno) + unicode(token.origin) + unicode(token_string)] += 1
+>         token.order = self.dictionary[unicode(token.lineno) + unicode(token.origin) + unicode(token_string)]
+321a329,331
+>                 self.lineno = token.lineno
+>                 self.origin = token.origin
+>                 self.order = token.order
+360c370
+<         return VariableNode(filter_expression)
+---
+>         return VariableNode(filter_expression, self.lineno, self.origin, self.order)
+951c961
+<     def __init__(self, filter_expression):
+---
+>     def __init__(self, filter_expression, lineno, origin, order):
+952a963,965
+>         self.lineno = lineno
+>         self.origin = origin
+>         self.order = order
+diff --git a/env/lib/python2.7/site-packages/django/template/debug.py b/env/lib/python2.7/site-packages/django/template/debug.py
+--- a/env/lib/python2.7/site-packages/django/template/debug.py
++++ b/env/lib/python2.7/site-packages/django/template/debug.py
+56c56
+<         return DebugVariableNode(contents)
+---
+>         return DebugVariableNode(contents, self.lineno, self.origin, self.order)
+diff --git a/env/lib/python2.7/site-packages/django/db/models/sql/compiler.py b/env/lib/python2.7/site-packages/django/db/models/sql/compiler.py
+--- a/env/lib/python2.7/site-packages/django/db/models/sql/compiler.py
++++ b/env/lib/python2.7/site-packages/django/db/models/sql/compiler.py
+787a788,790
+>     def patch(self, row):
+>         return row
+> 
+801c804
+<                 yield row
+---
+>                 yield self.patch(row)
