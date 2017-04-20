@@ -47,3 +47,10 @@ diff --git a/env/lib/python2.7/site-packages/django/db/models/sql/compiler.py b/
 <                 yield row
 ---
 >                 yield self.patch(row)
+diff --git a/manage.py b/manage.py
+--- a/manage.py
++++ b/manage.py
+3a4
+> import library
+9a11
+>     library.patchdjango()
